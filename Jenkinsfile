@@ -1,25 +1,27 @@
 pipeline {
-    agent {label 'dev'}
-    tools {
-        maven 'maven'
-    }
+    agent any
 
     stages {
-        stage('SCM') {
+        stage('git') {
             steps {
-                git branch: 'main', url: 'https://github.com/vamsibyramala/casino.git'
+               git branch: 'main', url: 'https://github.com/chandu2266/casino.git'
             }
         }
-        stage('Build') {
+        stage ('buid') {
             steps {
                 sh 'mvn clean package'
-                sh 'mvn -v'
             }
         }
-        stage('Deploy') {
+        stage ('deploy') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://3.109.55.133:8081/')], contextPath: 'app', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'tom', path: '', url: 'http://13.233.96.48:8080/')], contextPath: 'casino', war: '**/*.war'
             }
+        }
+        stage('triggers') {
+            steps {
+                 cron('H/2 * * * *')
+            }
+            
         }
     }
 }
