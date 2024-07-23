@@ -1,23 +1,11 @@
-pipeline {
-    agent any
-    triggers {
-        cron('H/2 * * * *')
+node {
+  stage('SCM') {
+    checkout scm
+  }
+  stage('SonarQube Analysis') {
+    def mvn = tool 'Default Maven';
+    withSonarQubeEnv() {
+      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=project-1"
     }
-    stages {
-        stage('git') {
-            steps {
-               git branch: 'main', url: 'https://github.com/chandu2266/casino.git'
-            }
-        }
-        stage ('deploy') {
-            steps {
-                deploy adapters: [tomcat9(credentialsId: 'tom', path: 'chandu', url: 'http://3.108.220.205:8080/')], contextPath: 'casino', war: '**/*.war'
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                sh 'mvn clean verify sonar:sonar'
-                }
-            }
-        }
-    }
+  }
+}
