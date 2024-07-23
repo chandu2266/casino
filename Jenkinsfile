@@ -17,7 +17,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv(credentialsId: 'project-1token') {
-    mvn clean verify sonar:sonar 
+    sh 'mvn clean verify sonar:sonar' 
 }
   }
     }
